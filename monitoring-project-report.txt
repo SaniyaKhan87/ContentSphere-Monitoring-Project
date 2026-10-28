@@ -1,0 +1,111 @@
+CONTENTSPHERE MONITORING PROJECT — TASK 9
+Technical Validation and Project Report
+
+Student: Saniya Maulavi
+Project: ContentSphere Monitoring
+AWS Region: Sydney (ap-southeast-2)
+GitHub: https://github.com/SaniyaKhan87/ContentSphere-Monitoring-Project
+
+1. OBJECTIVE
+Validate the monitoring architecture, metrics collection, dashboards, AWS alarms,
+centralized logging, security, troubleshooting, and resource optimization.
+
+2. EXPECTED ARCHITECTURE
+Metrics: ContentSphere EC2 -> Node Exporter -> Prometheus -> Grafana
+AWS: EC2/EBS -> CloudWatch Metrics -> Dashboard and Alarms -> Amazon SNS
+Logs: Application/System Logs -> Fluent Bit/Fluentd -> Elasticsearch -> Kibana
+Incident response: Alert -> Log Search -> Root-Cause Analysis -> Corrective Action -> Verification
+
+3. MONITORING REQUIREMENTS AND INITIAL KPIs
+CPU: warning above 70%; critical above 85%.
+Memory: warning above 75%; critical above 90%.
+Root filesystem: warning above 75%; critical above 90%.
+HTTP 5xx errors: investigate increasing and sustained error rates.
+Monitoring target: investigate intermittent failures and persistent downtime.
+Log ingestion: investigate delayed events and missing expected events.
+These are initial examples. Tune thresholds to the workload and available metrics.
+
+4. PROMETHEUS AND GRAFANA
+Prometheus notes and PromQL queries: prometheus/prometheus-notes.md
+Grafana dashboard notes: grafana/dashboard-notes.md
+Queries require their corresponding metrics to be available.
+Service and endpoint checks are recorded below.
+
+5. CLOUDWATCH AND SNS
+Previously recorded dashboard: ContentSphere-CloudWatch-Dashboard
+Previously recorded CPU alarm: ContentSphere-High-CPU-Alarm
+Previously recorded SNS topic: ContentSphere-CPU-Alerts
+Previously recorded CPU threshold: greater than 80%, one datapoint within five minutes.
+Last recorded alarm state: Insufficient data.
+Current alarm state and notification delivery must be verified in AWS.
+
+6. CENTRALIZED LOGGING AND KIBANA
+Logging notes: logging/elasticsearch-notes.md
+Kibana notes: kibana/dashboard-notes.md
+A working log pipeline requires verification of collector status, Elasticsearch ingestion,
+and searchable events in Kibana.
+
+7. SECURITY AND ACCESS CONTROL
+Never commit passwords, access tokens, AWS credentials, or private SSH keys.
+Restrict monitoring ports to authorized sources.
+Protect Grafana, Elasticsearch, and Kibana with appropriate access controls.
+Use encrypted connections where supported.
+
+8. RETENTION AND COST OPTIMIZATION
+Set log retention according to project requirements and available storage.
+Review EC2, EBS, CloudWatch, and other AWS resource usage and costs.
+Stop or delete unused lab resources only after confirming they are no longer needed.
+
+9. TROUBLESHOOTING WORKFLOW
+1. Check the alert and timestamp.
+2. Verify service status and Prometheus targets.
+3. Review Grafana and CloudWatch metrics.
+4. Check log collector and Elasticsearch ingestion.
+5. Search the relevant events in Kibana.
+6. Apply corrective action and verify recovery.
+
+10. VALIDATION RESULTS
+The command-generated checks below record observations from this EC2 host.
+They do not independently prove that remote targets, dashboards, alarms, or notifications work.
+
+=== VALIDATION RESULTS ===
+Check time: 2026-10-28T11:46:16+00:00
+Host: ip-172-31-15-140
+
+--- Service: prometheus ---
+active
+
+--- Service: node_exporter ---
+No matching system service unit found on this host.
+
+--- Service: grafana-server ---
+active
+
+--- Service: fluent-bit ---
+active
+
+--- Service: elasticsearch ---
+active
+
+--- Service: kibana ---
+active
+
+--- Prometheus local health endpoint ---
+Prometheus Server is Healthy.
+
+HTTP_STATUS:200
+
+--- Node Exporter local metrics endpoint ---
+HTTP_STATUS:200
+
+--- Prometheus target endpoint ---
+{"status":"success","data":{"activeTargets":[{"discoveredLabels":{"__address__":"localhost:9100","__metrics_path__":"/metrics","__scheme__":"http","__scrape_interval__":"15s","__scrape_timeout__":"10s","job":"node"},"labels":{"instance":"localhost:9100","job":"node"},"scrapePool":"node","scrapeUrl":"http://localhost:9100/metrics","globalUrl":"http://ip-172-31-15-140:9100/metrics","lastError":"","lastScrape":"2026-10-28T11:46:02.917731125Z","lastScrapeDuration":0.049105483,"health":"up","scrapeInterval":"15s","scrapeTimeout":"10s"},{"discoveredLabels":{"__address__":"localhost:9090","__metrics_path__":"/metrics","__scheme__":"http","__scrape_interval__":"5s","__scrape_timeout__":"5s","job":"prometheus"},"labels":{"instance":"localhost:9090","job":"prometheus"},"scrapePool":"prometheus","scrapeUrl":"http://localhost:9090/metrics","globalUrl":"http://ip-172-31-15-140:9090/metrics","lastError":"","lastScrape":"2026-10-28T11:46:15.899533799Z","lastScrapeDuration":0.003622377,"health":"up","scrapeInterval":"5s","scrapeTimeout":"5s"}],"droppedTargets":[],"droppedTargetCounts":{"node":0,"prometheus":0}}}
+HTTP_STATUS:200
+
+
+--- Relevant repository configuration files ---
+NOT FOUND: prometheus/prometheus.yml
+NOT FOUND: logging/fluent-bit.conf
+FOUND: grafana/dashboards
+
+Note: AWS CloudWatch, SNS delivery, remote EFK ingestion, and dashboard rendering require separate console or endpoint verification.
